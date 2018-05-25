@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">Bill Calculater</string>
     <string name="action_settings">Settings</string>
+    <array name="Products">
+        <item>Fish</item>
+        <item>Doner</item>
+        <item>Pizza</item>
+        <item>Hamburger</item>
+        <item>Toast</item>
+    </array>
+    <array name="Desk_Numbers">
+        <item>Desk 1</item>
+        <item>Desk 2</item>
+        <item>Desk 3</item>
+        <item>Desk 4</item>
+        <item>Desk 5</item>
+    </array>
 </resources>
