@@ -6,20 +6,26 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
 
     public static final String Order_Name ="com.example.fatih.billcalculater.ordername";
     public static final String Order_PRICE ="com.example.fatih.billcalculater.orderprice";
+    public static final String Quantity = "com.example.fatih.billcalculater.quantity";
+    public static final String MenuPos = "com.example.fatih.billcalculater.menupos";
+    public static final String DeskPos = "com.example.fatih.billcalculater.deskpos";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,22 +57,56 @@ public class MainActivity extends AppCompatActivity {
         sp.setAdapter(adapter);
         spMenu.setAdapter(adapterMenu);
 
+    //Find Price for Main Screen
+       final TextView Screenprice=(TextView) findViewById(R.id.textViewPrice);
 
-      String FPrice=spMenu.getSelectedItem().toString();
+        spMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItemText = (String) parent.getItemAtPosition(position);
+                long Menu_id= parent.getItemIdAtPosition(position);
+                // Notify the selected item text
+                String FPrice1=dataHelper.findPrice(selectedItemText);
 
-       FPrice=dataHelper.findPrice(FPrice);
-       TextView Screenprice=(TextView) findViewById(R.id.textViewPrice);
+                Screenprice.setText(FPrice1.toString());
 
-       Screenprice.setText(FPrice.toString());
+                intent.putExtra(MenuPos,Integer.valueOf(String.valueOf(Menu_id)));
 
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                long Desk_id= parent.getItemIdAtPosition(position);
+                // Notify the selected item text
+
+                intent.putExtra(DeskPos,Integer.valueOf(String.valueOf(Desk_id)));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        //Show Button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
 
 
+               EditText quantity = (EditText)findViewById(R.id.editTextQuantity);
+
+               String Quantity1= quantity.getText().toString();
+               intent.putExtra(Quantity,Quantity1);
 
                 TextView order=(TextView) findViewById(R.id.Mtxt);
                 TextView price=(TextView) findViewById(R.id.Mtxt);
@@ -108,5 +148,4 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 }

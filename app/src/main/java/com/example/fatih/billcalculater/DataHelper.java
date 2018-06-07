@@ -12,18 +12,18 @@ public class DataHelper extends SQLiteOpenHelper {
     public static final String Database_Name ="BillCalc";
     public static final String Table_Desk ="desk";
     public static final String Table_Menu ="menu";
-    public static final String Table_Order ="order";
+    public static final String Table_Order ="ord";
     public static double top=0;
 
     public static final int Database_Version =1;
 
     public static final String Create_Menu ="CREATE TABLE IF NOT EXISTS "+Table_Menu+"(id INTEGER PRIMARY KEY AUTOINCREMENT,food_name STRING NOT NULL UNIQUE,price DOUBLE NOT NULL )";
     public static final String Create_Desk ="CREATE TABLE IF NOT EXISTS "+ Table_Desk +"(id INTEGER PRIMARY KEY AUTOINCREMENT, desk_no STRING NOT NULL UNIQUE )";
-    //public static final String Create_Order ="CREATE TABLE IF NOT EXISTS "+ Table_Order +"(id INTEGER PRIMARY KEY AUTOINCREMENT, desk_id INTEGER NOT NULL,food_id INTEGER NOT NULL )";
+    public static final String Create_Order ="CREATE TABLE IF NOT EXISTS "+ Table_Order +"(id INTEGER PRIMARY KEY AUTOINCREMENT, desk_id INTEGER NOT NULL, food_id INTEGER NOT NULL )";
 
     public static final String Delete_Menu ="DROP TABLE IF EXISTS "+Table_Menu;
     public static final String Delete_Desk ="DROP TABLE IF EXISTS "+Table_Desk;
-    //public static final String Delete_Order ="DROP TABLE IF EXISTS "+Table_Order;
+    public static final String Delete_Order ="DROP TABLE IF EXISTS "+Table_Order;
 
     public DataHelper(Context context){
         super(context,Database_Name,null,Database_Version);
@@ -33,14 +33,14 @@ public class DataHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Create_Desk);
         db.execSQL(Create_Menu);
-        // db.execSQL(Create_Order);
+        db.execSQL(Create_Order);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(Delete_Desk);
         db.execSQL(Delete_Menu);
-        // db.execSQL(Delete_Order);
+        db.execSQL(Delete_Order);
         onCreate(db);
     }
 
@@ -81,7 +81,7 @@ public class DataHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void insertOrder(int desk_id, int food_id){
+    public void insertOrder(int desk_id, String food_id){
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         ContentValues values;
@@ -136,7 +136,6 @@ public class DataHelper extends SQLiteOpenHelper {
                     String food_name = c.getString(c.getColumnIndex("food_name"));
                     double price = c.getDouble(c.getColumnIndex("price"));
                     listmenu.add(food_name);
-                    //listmenu.add(String.valueOf(price));
                 }
             }
             db.setTransactionSuccessful();
@@ -160,7 +159,7 @@ public class DataHelper extends SQLiteOpenHelper {
             Cursor cursor = db.rawQuery(selecQuery,null);
             if (cursor.getCount()>0){
                 while (cursor.moveToNext()){
-                    int desk_id = cursor.getInt(cursor.getColumnIndex("desk_id"));
+                    int desk_id = cursor.getInt(cursor.getColumnIndex("desk_no"));
                     listorder.add(String.valueOf(desk_id));
                 }
             }
@@ -168,9 +167,9 @@ public class DataHelper extends SQLiteOpenHelper {
             Cursor c = db.rawQuery(selecQuery,null);
             if (c.getCount()>0){
                 while (c.moveToNext()){
-                    String food_name = c.getString(c.getColumnIndex("food_name"));
+                    String food_id = c.getString(c.getColumnIndex("food_name"));
                     // double price = c.getDouble(c.getColumnIndex("price"));
-                    listorder.add(food_name);
+                    listorder.add(food_id);
                     // listorder.add(String.valueOf(price));
                 }
             }
