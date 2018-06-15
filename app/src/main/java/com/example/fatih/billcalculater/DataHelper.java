@@ -19,7 +19,7 @@ public class DataHelper extends SQLiteOpenHelper {
 
     public static final String Create_Menu ="CREATE TABLE IF NOT EXISTS "+Table_Menu+"(id INTEGER PRIMARY KEY AUTOINCREMENT,food_name STRING NOT NULL UNIQUE,price DOUBLE NOT NULL )";
     public static final String Create_Desk ="CREATE TABLE IF NOT EXISTS "+ Table_Desk +"(id INTEGER PRIMARY KEY AUTOINCREMENT, desk_no STRING NOT NULL UNIQUE )";
-    public static final String Create_Order ="CREATE TABLE IF NOT EXISTS "+ Table_Order +"(id INTEGER PRIMARY KEY AUTOINCREMENT, desk_id INTEGER NOT NULL, food_id INTEGER NOT NULL )";
+    public static final String Create_Order ="CREATE TABLE IF NOT EXISTS "+ Table_Order +"(id INTEGER PRIMARY KEY AUTOINCREMENT, desk_id STRING NOT NULL, food_id STRING NOT NULL )";
 
     public static final String Delete_Menu ="DROP TABLE IF EXISTS "+Table_Menu;
     public static final String Delete_Desk ="DROP TABLE IF EXISTS "+Table_Desk;
@@ -81,7 +81,7 @@ public class DataHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void insertOrder(int desk_id, String food_id){
+    public void insertOrder( String desk_id,String food_id){
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         ContentValues values;
@@ -155,22 +155,14 @@ public class DataHelper extends SQLiteOpenHelper {
         db.beginTransaction();
         try {
 
-            String selecQuery = "SELECT * FROM "+ Table_Desk;
+            String selecQuery = "SELECT * FROM "+ Table_Order;
             Cursor cursor = db.rawQuery(selecQuery,null);
             if (cursor.getCount()>0){
                 while (cursor.moveToNext()){
-                    int desk_id = cursor.getInt(cursor.getColumnIndex("desk_no"));
-                    listorder.add(String.valueOf(desk_id));
-                }
-            }
-            selecQuery = "SELECT * FROM "+Table_Menu;
-            Cursor c = db.rawQuery(selecQuery,null);
-            if (c.getCount()>0){
-                while (c.moveToNext()){
-                    String food_id = c.getString(c.getColumnIndex("food_name"));
-                    // double price = c.getDouble(c.getColumnIndex("price"));
-                    listorder.add(food_id);
-                    // listorder.add(String.valueOf(price));
+                    String desk_id = cursor.getString(cursor.getColumnIndex("desk_id"));
+                    String food_id = cursor.getString(cursor.getColumnIndex("food_id"));
+                    listorder.add(desk_id);
+                    //listorder.add(food_id);
                 }
             }
 
@@ -185,6 +177,7 @@ public class DataHelper extends SQLiteOpenHelper {
         }
         return listorder;
     }
+
     public String findPrice(String food){
         SQLiteDatabase db = this.getReadableDatabase();
         db.beginTransaction();
@@ -196,4 +189,14 @@ public class DataHelper extends SQLiteOpenHelper {
         return price;
     }
 
+    public String findOrders(String desk_id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        Cursor cursor = db.query("ord",null,"desk_id=?",new String[]{desk_id},null,null,null);
+        cursor.moveToFirst();
+        String price = cursor.getString(cursor.getColumnIndex("food_id"));
+        cursor.close();
+
+        return price;
+    }
 }

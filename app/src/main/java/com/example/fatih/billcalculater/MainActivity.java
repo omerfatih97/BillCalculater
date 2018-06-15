@@ -18,6 +18,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -45,7 +47,6 @@ public class MainActivity extends AppCompatActivity  {
         dataHelper.insertMenu("Doner", String.valueOf(3));
         dataHelper.insertMenu("Toast", String.valueOf(2));
 
-
         ArrayList<String> listMenu = dataHelper.getAllMenu();
         Spinner spMenu = (Spinner)findViewById(R.id.spinnerMenu);
         ArrayAdapter<String> adapterMenu=new ArrayAdapter<String>(this,R.layout.spinner_layout,R.id.Mtxt,listMenu);
@@ -64,13 +65,13 @@ public class MainActivity extends AppCompatActivity  {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItemText = (String) parent.getItemAtPosition(position);
-                long Menu_id= parent.getItemIdAtPosition(position);
+
                 // Notify the selected item text
                 String FPrice1=dataHelper.findPrice(selectedItemText);
 
                 Screenprice.setText(FPrice1.toString());
 
-                intent.putExtra(MenuPos,Integer.valueOf(String.valueOf(Menu_id)));
+                intent.putExtra(MenuPos,selectedItemText);
 
             }
 
@@ -83,10 +84,10 @@ public class MainActivity extends AppCompatActivity  {
         sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                long Desk_id= parent.getItemIdAtPosition(position);
+                String Desk_id = (String) parent.getItemAtPosition(position);
                 // Notify the selected item text
 
-                intent.putExtra(DeskPos,Integer.valueOf(String.valueOf(Desk_id)));
+                intent.putExtra(DeskPos,Desk_id);
             }
 
             @Override
@@ -103,22 +104,24 @@ public class MainActivity extends AppCompatActivity  {
             public void onClick(View view) {
 
 
-               EditText quantity = (EditText)findViewById(R.id.editTextQuantity);
-
-               String Quantity1= quantity.getText().toString();
-               intent.putExtra(Quantity,Quantity1);
+                EditText quantity = (EditText)findViewById(R.id.editTextQuantity);
+                String Quantity1= quantity.getText().toString();
+                intent.putExtra(Quantity,Quantity1);
 
                 TextView order=(TextView) findViewById(R.id.Mtxt);
                 TextView price=(TextView) findViewById(R.id.Mtxt);
 
+                dataHelper.insertOrder(""+DeskPos,""+MenuPos);
 
                 String ordername=order.getText().toString();
                 String orderprice1=price.getText().toString();
+
 
                 String orderprice=dataHelper.findPrice(orderprice1);
 
                 intent.putExtra(Order_Name,ordername);
                 intent.putExtra(Order_PRICE,orderprice);
+
 
                 startActivity(intent);
 
