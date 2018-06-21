@@ -81,7 +81,7 @@ public class DataHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void insertOrder( String desk_id,String food_id){
+    /* public void insertOrder( String desk_id,String food_id){
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         ContentValues values;
@@ -99,7 +99,24 @@ public class DataHelper extends SQLiteOpenHelper {
             db.close();
         }
     }
-
+*/
+    public boolean AddData(String Masa,String Yemek){
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues contentValues=new ContentValues();
+        contentValues.put("desk_id",Masa);
+        contentValues.put("food_id",Yemek);
+        long result=db.insert(Table_Order,null,contentValues);
+        if (result==-1){
+            return false;
+        }else {
+            return true;
+        }
+    }
+    public Cursor getListOrder(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor data= db.rawQuery("SELECT * FROM "+Table_Order,null);
+        return data;
+    }
     public ArrayList<String> getAllDesk(){
         ArrayList<String> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -149,24 +166,20 @@ public class DataHelper extends SQLiteOpenHelper {
         return listmenu;
     }
 
-    public ArrayList<String> getAllOrder(){
+    public ArrayList<String>getAllOrder(){
         ArrayList<String> listorder = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         db.beginTransaction();
         try {
-
-            String selecQuery = "SELECT * FROM "+ Table_Order;
-            Cursor cursor = db.rawQuery(selecQuery,null);
-            if (cursor.getCount()>0){
-                while (cursor.moveToNext()){
-                    String desk_id = cursor.getString(cursor.getColumnIndex("desk_id"));
-                    String food_id = cursor.getString(cursor.getColumnIndex("food_id"));
-                    listorder.add(desk_id);
-                    //listorder.add(food_id);
+            String selecQuery = "SELECT * FROM "+Table_Order;
+            Cursor c = db.rawQuery(selecQuery,null);
+            if (c.getCount()>0){
+                while (c.moveToNext()){
+                    String food_name = c.getString(c.getColumnIndex("food_id"));
+                    String desk = c.getString(c.getColumnIndex("desk_id"));
+                    listorder.add(food_name);
                 }
             }
-
-
             db.setTransactionSuccessful();
         }catch (Exception e){
             e.printStackTrace();
@@ -194,9 +207,9 @@ public class DataHelper extends SQLiteOpenHelper {
         db.beginTransaction();
         Cursor cursor = db.query("ord",null,"desk_id=?",new String[]{desk_id},null,null,null);
         cursor.moveToFirst();
-        String price = cursor.getString(cursor.getColumnIndex("food_id"));
+        String food = cursor.getString(cursor.getColumnIndex("food_id"));
         cursor.close();
 
-        return price;
+        return food;
     }
 }
