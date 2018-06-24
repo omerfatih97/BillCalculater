@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Menu;
@@ -13,14 +12,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -29,9 +25,16 @@ public class MainActivity extends AppCompatActivity  {
     public static final String Quantity = "com.example.fatih.billcalculater.quantity";
     public static final String MenuPos = "com.example.fatih.billcalculater.menupos";
     public static final String DeskPos = "com.example.fatih.billcalculater.deskpos";
-    public static final String list= "com.example.fatih.billcalculater.list";
+
+
+
     DataHelper dataHelper = new DataHelper(this);
     SQLiteDatabase db;
+
+    String[] orderDesk =new String[100];
+
+
+    int i=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity  {
 
         ArrayList<String>listDesk = dataHelper.getAllDesk();
         final Spinner sp = (Spinner)findViewById(R.id.spinnerDesk);
-        final ArrayAdapter<String>adapter=new ArrayAdapter<String>(this,R.layout.spinner_layout,R.id.Dtxt,listDesk);
+        ArrayAdapter<String>adapter=new ArrayAdapter<String>(this,R.layout.spinner_layout,R.id.Dtxt,listDesk);
 
         sp.setAdapter(adapter);
         spMenu.setAdapter(adapterMenu);
@@ -85,125 +88,88 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
-        sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+       sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String Desk_id = (String) parent.getItemAtPosition(position);
                 // Notify the selected item text
-
                 intent.putExtra(DeskPos,Desk_id);
+                orderDesk[0]=Desk_id;
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
+
+
+
         Button addBtn=(Button)findViewById(R.id.buttonAdd);
         addBtn.setOnClickListener(new View.OnClickListener() {
-
+           String gecici=new String();
             @Override
             public void onClick(View v) {
 
 
 
-                EditText quantity = (EditText)findViewById(R.id.editTextQuantity);
-                String Quantity1= quantity.getText().toString();
+                final EditText quantity = (EditText)findViewById(R.id.editTextQuantity);
+                final String Quantity1= quantity.getText().toString();
                 intent.putExtra(Quantity,Quantity1);
+                Double say=Double.parseDouble(intent.getStringExtra(MainActivity.Quantity));
 
-
-                TextView order=(TextView) findViewById(R.id.Mtxt);
+                final TextView order=(TextView) findViewById(R.id.Mtxt);
                 TextView price=(TextView) findViewById(R.id.Mtxt);
 
-
-
-                String ordername=order.getText().toString();
+                final String ordername=order.getText().toString();
                 String orderprice1=price.getText().toString();
-
 
                 String orderprice=dataHelper.findPrice(orderprice1);
 
+                    say*=Double.parseDouble(String.valueOf(orderprice));
+                    orderprice=say.toString();
+
+                if(orderDesk[i]!=null){
+                    sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            String Desk_id=(String)parent.getItemAtPosition(position);
+                            // Notify the selected item text
+                            if(Desk_id!=null)
+                                orderDesk[i]=Desk_id;
+                            else if(orderDesk[i]==null&&Desk_id==null)
+                                orderDesk[i]=orderDesk[i-1];
+
+                        }
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
+                    });
+
+                    if(orderDesk[i]!=null){
+                        gecici=orderDesk[i];
+                    }else
+                        orderDesk[i]=gecici;
+
+
+
+
+                    gecici=orderDesk[i];
+                    //Toast.makeText(MainActivity.this," "+gecici,Toast.LENGTH_LONG).show();
+                    AddData(gecici,ordername,Quantity1);
+
+                    intent.putExtra(DeskPos,orderDesk);
+                    i++;
+                }
+
+
+
                 intent.putExtra(Order_Name,ordername);
                 intent.putExtra(Order_PRICE,orderprice);
-                AddData(ordername);
-                /*try {
-                spMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        String Yemek = (String) parent.getItemAtPosition(position);
+                intent.putExtra(Quantity,Quantity1);
 
-                        // Notify the selected item text
-                        AddData(Yemek);
-                        intent.putExtra(MenuPos,Yemek);
 
-                    }
+               // AddData(DeskPos,ordername,Quantity1);
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
-                    }
-                });
-
-                sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        String Desk_id = (String) parent.getItemAtPosition(position);
-                        // Notify the selected item text
-
-                        intent.putExtra(DeskPos,Desk_id);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
-                    }
-                });
-                    //Snackbar.make(v, "Oldu!!!", Snackbar.LENGTH_LONG)
-                         //   .setAction("Action", null).show();
-                }catch (Exception e) {
-                    // statements to handle any exceptions
-                    Snackbar.make(v, "Hata!!!", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-
-/*
-                String desk = intent.getStringExtra(MainActivity.DeskPos);
-                String yemek = intent.getStringExtra(MainActivity.MenuPos);
-                EditText quantity = (EditText)findViewById(R.id.editTextQuantity);
-                String QuantityAdd= quantity.getText().toString();
-
-                try {
-                    if(desk=="Desk 1"){
-                        if(yemek=="Fish"){
-                            dataHelper.insertOrder("Desk 1","Fish");
-                        }
-                    if(yemek=="Hamburger"){
-                        dataHelper.insertOrder("Desk 1","Hamburger");
-                    }
-                    if(yemek=="Pizza"){
-                            dataHelper.insertOrder("Desk 1","Pizza");
-                        }
-                    if(yemek=="Döner"){
-                            dataHelper.insertOrder("Desk 1","Döner");
-                        }
-                    if(yemek=="Toast"){
-                            dataHelper.insertOrder("Desk 1","Toast");
-                        }
-
-                }
-
-                    //dataHelper.insertOrder(String.valueOf(desk),String.valueOf(yemek));
-                    desk=desk.toString();
-                    Snackbar.make(v, "Desk: "+" "+desk, Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-
-                }
-                catch (Exception e) {
-                    // statements to handle any exceptions
-                    Snackbar.make(v, "Hata!!!", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }*/
             }
         });
 
@@ -211,7 +177,8 @@ public class MainActivity extends AppCompatActivity  {
         delBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dataHelper.onUpgrade(db,0,1);
+            dataHelper.onUpgrade(db,1,2);
+
             }
         });
 
@@ -220,25 +187,17 @@ public class MainActivity extends AppCompatActivity  {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                EditText quantity = (EditText)findViewById(R.id.editTextQuantity);
-                String Quantity1= quantity.getText().toString();
-                intent.putExtra(Quantity,Quantity1);
-
-                TextView order=(TextView) findViewById(R.id.Mtxt);
-                TextView price=(TextView) findViewById(R.id.Mtxt);
-
-                //dataHelper.insertOrder(""+DeskPos,""+MenuPos);
-
-                String ordername=order.getText().toString();
-                String orderprice1=price.getText().toString();
-
-
-                String orderprice=dataHelper.findPrice(orderprice1);
-
-                intent.putExtra(Order_Name,ordername);
-                intent.putExtra(Order_PRICE,orderprice);
-
+                sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        String Desk_id = (String) parent.getItemAtPosition(position);
+                        // Notify the selected item text
+                        intent.putExtra(DeskPos,Desk_id);
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
 
                 startActivity(intent);
 
@@ -271,10 +230,10 @@ public class MainActivity extends AppCompatActivity  {
         return super.onOptionsItemSelected(item);
     }
 
-    public void AddData(String newEntry){
-        boolean insertData=dataHelper.AddData( "Desk 1",newEntry);
+    public void AddData(String newDesk,String newOrder,String quantity){
+       boolean insertData=dataHelper.AddData( newDesk,newOrder,quantity);
         if (insertData==true){
-            Toast.makeText(MainActivity.this,"Success",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this,"Successfully  Added ",Toast.LENGTH_LONG).show();
         }else {
             Toast.makeText(MainActivity.this,"Wrong",Toast.LENGTH_LONG).show();
         }
