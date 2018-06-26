@@ -20,7 +20,7 @@ public class DataHelper extends SQLiteOpenHelper {
 
     public static final String Create_Menu ="CREATE TABLE IF NOT EXISTS "+Table_Menu+"(id INTEGER PRIMARY KEY AUTOINCREMENT,food_name STRING NOT NULL UNIQUE,price DOUBLE NOT NULL )";
     public static final String Create_Desk ="CREATE TABLE IF NOT EXISTS "+ Table_Desk +"(id INTEGER PRIMARY KEY AUTOINCREMENT, desk_no STRING NOT NULL UNIQUE )";
-    public static final String Create_Order ="CREATE TABLE IF NOT EXISTS "+ Table_Order +"(id INTEGER PRIMARY KEY AUTOINCREMENT, desk_id STRING NOT NULL, food_id STRING NOT NULL)";
+    public static final String Create_Order ="CREATE TABLE IF NOT EXISTS "+ Table_Order +"(id INTEGER PRIMARY KEY AUTOINCREMENT, desk_id STRING NOT NULL, food_id STRING NOT NULL,total DOUBLE NOT NULL)";
 
     public static final String Delete_Menu ="DROP TABLE IF EXISTS "+Table_Menu;
     public static final String Delete_Desk ="DROP TABLE IF EXISTS "+Table_Desk;
@@ -40,6 +40,8 @@ public class DataHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(Delete_Order);
+        db.execSQL(Delete_Desk);
+        db.execSQL(Delete_Desk);
         // Create tables again
         onCreate(db);
     }
@@ -93,9 +95,8 @@ public class DataHelper extends SQLiteOpenHelper {
         cursor.close();
         int quan=Integer.parseInt(Quantity);
         price*=quan;
-
-        //contentValues.put("toplam",price);
-
+        String price1=String.valueOf(price);
+        contentValues.put("total",price1);
         contentValues.put("food_id",Quantity+" X "+Yemek+" (Price: "+price+"€)");
 
         long result=db.insert(Table_Order,null,contentValues);
@@ -159,13 +160,13 @@ public class DataHelper extends SQLiteOpenHelper {
         return listmenu;
     }
 
-    public ArrayList<String>getAllOrder(){
+    public ArrayList<String>getAllOrder(String Desk){
         ArrayList<String> listorder = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         db.beginTransaction();
         try {
             String selecQuery = "SELECT * FROM "+Table_Order;
-            Cursor c = db.rawQuery(selecQuery,null);
+            Cursor c = db.query("ord",null,"desk_id=?",new String[]{Desk},null,null,null);
             if (c.getCount()>0){
                 while (c.moveToNext()){
                     String food_name = c.getString(c.getColumnIndex("food_id"));
@@ -198,5 +199,10 @@ public class DataHelper extends SQLiteOpenHelper {
 
 
         return price;
+    }
+
+    public Integer deleteData(String id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(Table_Order,"desk_id=?",new String[]{id});
     }
 }
