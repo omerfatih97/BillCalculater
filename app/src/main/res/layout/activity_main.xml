@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/order_list">
 
 
     <LinearLayout
@@ -39,6 +40,7 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="30sp"
                 android:textStyle="bold|italic"
+                android:visibility="visible"
                 app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -97,6 +99,7 @@
         android:ems="10"
         android:hint="Quantity"
         android:inputType="number"
+        android:textColor="@android:color/holo_blue_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.202"
         app:layout_constraintStart_toStartOf="parent"
