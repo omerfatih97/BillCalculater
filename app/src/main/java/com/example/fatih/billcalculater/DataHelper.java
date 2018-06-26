@@ -106,11 +106,7 @@ public class DataHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-    public Cursor getListOrder(){
-        SQLiteDatabase db=this.getWritableDatabase();
-        Cursor data= db.rawQuery("SELECT * FROM "+Table_Order,null);
-        return data;
-    }
+
     public ArrayList<String> getAllDesk(){
         ArrayList<String> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();

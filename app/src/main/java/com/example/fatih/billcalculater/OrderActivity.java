@@ -31,24 +31,18 @@ public class OrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         Intent intent = getIntent();
-
-        Double Price=Double.parseDouble(intent.getStringExtra(MainActivity.Order_PRICE));
         String Desk=intent.getStringExtra(MainActivity.DeskPos);
-
-        int quantity=Integer.parseInt(intent.getStringExtra(MainActivity.Quantity));
-        Price*=quantity;
+        Double Price=dataHelper.findDesk(desk);
 
         final ArrayList<String>arrayList1=new ArrayList<String>();
 
         lv=(ListView)findViewById(R.id.listView_lv);
 
 
-                    ArrayList<String> listOrder= dataHelper.getAllOrder();
+                    ArrayList<String> listOrder= dataHelper.getAllOrder(Desk);
                     ArrayAdapter<String>adapter1=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,listOrder);
                     lv.setAdapter(adapter1);
                     adapter1.notifyDataSetChanged();
-                    Toast.makeText(OrderActivity.this,"Başarı",Toast.LENGTH_LONG).show();
-
 
 
         TextView price= (TextView) findViewById(R.id.textViewPrice);
