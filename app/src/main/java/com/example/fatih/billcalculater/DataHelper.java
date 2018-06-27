@@ -168,7 +168,7 @@ public class DataHelper extends SQLiteOpenHelper {
                     String food_name = c.getString(c.getColumnIndex("food_id"));
                     String id = c.getString(c.getColumnIndex("id"));
 
-                    listorder.add(id+""+food_name);
+                    listorder.add("Order_ID: "+id+""+food_name);
                 }
             }
             db.setTransactionSuccessful();

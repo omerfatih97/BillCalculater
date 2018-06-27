@@ -6,7 +6,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,6 +43,7 @@ public class OrderActivity extends AppCompatActivity {
         final ArrayList<String>arrayList1=new ArrayList<String>();
 
         lv=(ListView)findViewById(R.id.listView_lv);
+        Button delBut=(Button)findViewById(R.id.orderDeleteBut);
 
 
                     ArrayList<String> listOrder= dataHelper.getAllOrder(Desk);
@@ -47,6 +51,27 @@ public class OrderActivity extends AppCompatActivity {
                     lv.setAdapter(adapter1);
                     adapter1.notifyDataSetChanged();
 
+        delBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText idtext= (EditText)findViewById(R.id.editTextDelID);
+
+                String id= idtext.getText().toString();
+
+                if(id.trim().isEmpty()){
+                    idtext.setError("Id coloumn should be filled. It can't be empty!!");
+                }
+                else
+                {
+                    int res=delData(id);
+                    if (res==1)
+                        Toast.makeText(OrderActivity.this,"Succesfully Deleted",Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(OrderActivity.this,"Wrong!!!",Toast.LENGTH_LONG).show();
+                }
+            }
+
+        });
 
         TextView price= (TextView) findViewById(R.id.textViewPrice);
         price.setText(Price+" €");
