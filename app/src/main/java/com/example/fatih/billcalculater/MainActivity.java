@@ -203,8 +203,6 @@ public class MainActivity extends AppCompatActivity  {
 
 
                     gecici=orderDesk[i];
-                    //Toast.makeText(MainActivity.this,"Geldi ",Toast.LENGTH_LONG).show();
-                    //dataHelper.deleteData(gecici);
                     delData(gecici);
                     i++;
                 }

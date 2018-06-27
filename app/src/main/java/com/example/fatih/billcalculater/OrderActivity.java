@@ -32,7 +32,10 @@ public class OrderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order);
         Intent intent = getIntent();
         String Desk=intent.getStringExtra(MainActivity.DeskPos);
-        Double Price=dataHelper.findDesk(desk);
+        TextView orderList=(TextView)findViewById(R.id.Order_List);
+        orderList.setText(""+Desk+" Order List");
+        Toast.makeText(OrderActivity.this," "+Desk,Toast.LENGTH_LONG).show();
+        Double Price=dataHelper.findDesk(Desk);
 
         final ArrayList<String>arrayList1=new ArrayList<String>();
 
@@ -48,9 +51,17 @@ public class OrderActivity extends AppCompatActivity {
         TextView price= (TextView) findViewById(R.id.textViewPrice);
         price.setText(Price+" €");
 
+    }
 
-
-
+    public int delData(String id){
+        Intent intent = getIntent();
+        String desk=intent.getStringExtra(MainActivity.DeskPos);
+        int res =dataHelper.deleteOrder(id);
+        final ArrayList<String> listOrder= dataHelper.getAllOrder(desk);
+        final ArrayAdapter<String>adapter1=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,listOrder);
+        lv.setAdapter(adapter1);
+        adapter1.notifyDataSetChanged();
+        return res;
     }
 
 

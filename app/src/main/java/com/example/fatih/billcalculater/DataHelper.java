@@ -166,9 +166,9 @@ public class DataHelper extends SQLiteOpenHelper {
             if (c.getCount()>0){
                 while (c.moveToNext()){
                     String food_name = c.getString(c.getColumnIndex("food_id"));
-                    String desk = c.getString(c.getColumnIndex("desk_id"));
+                    String id = c.getString(c.getColumnIndex("id"));
 
-                    listorder.add(desk+":  "+food_name);
+                    listorder.add(id+""+food_name);
                 }
             }
             db.setTransactionSuccessful();
@@ -197,8 +197,37 @@ public class DataHelper extends SQLiteOpenHelper {
         return price;
     }
 
+    public double findDesk(String desk){
+        double total=0,variable=0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        try {
+            String selecQuery = "SELECT * FROM "+Table_Order;
+            Cursor c = db.query("ord",null,"desk_id=?",new String[]{desk},null,null,null);
+            if (c.getCount()>0){
+                while (c.moveToNext()){
+                    variable=c.getDouble(c.getColumnIndex("total"));
+                    total+=variable;
+                }
+            }
+            db.setTransactionSuccessful();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            db.endTransaction();
+            db.close();
+        }
+        return total;
+    }
+
     public Integer deleteData(String id){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(Table_Order,"desk_id=?",new String[]{id});
     }
+    public Integer deleteOrder(String id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(Table_Order,"id=?",new String[]{id});
+    }
+
 }
