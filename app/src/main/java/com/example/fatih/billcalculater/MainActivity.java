@@ -33,9 +33,9 @@ public class MainActivity extends AppCompatActivity  {
     SQLiteDatabase db;
 
     String[] orderDesk =new String[100];
+    String gecici=new String();
 
-
-    int i=0;
+    int i=0,count=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,59 +114,63 @@ public class MainActivity extends AppCompatActivity  {
 
                 final EditText quantity = (EditText) findViewById(R.id.editTextQuantity);
                 final String Quantity1 = quantity.getText().toString();
-                intent.putExtra(Quantity, Quantity1);
-                Double say = Double.parseDouble(intent.getStringExtra(MainActivity.Quantity));
 
-                final TextView order = (TextView) findViewById(R.id.Mtxt);
-                TextView price = (TextView) findViewById(R.id.Mtxt);
+                if(Quantity1.trim().isEmpty())
+                    quantity.setError("Enter Quantity please!!!");
+                else {
+                    intent.putExtra(Quantity, Quantity1);
+                    Double say = Double.parseDouble(intent.getStringExtra(MainActivity.Quantity));
 
-                final String ordername = order.getText().toString();
-                String orderprice1 = price.getText().toString();
+                    final TextView order = (TextView) findViewById(R.id.Mtxt);
+                    TextView price = (TextView) findViewById(R.id.Mtxt);
 
-                String orderprice = dataHelper.findPrice(orderprice1);
+                    final String ordername = order.getText().toString();
+                    String orderprice1 = price.getText().toString();
 
-                say *= Double.parseDouble(String.valueOf(orderprice));
-                orderprice = say.toString();
+                    String orderprice = dataHelper.findPrice(orderprice1);
 
-                if (orderDesk[i] != null) {
-                    sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            String Desk_id = (String) parent.getItemAtPosition(position);
-                            // Notify the selected item text
-                            if (Desk_id != null)
-                                orderDesk[i] = Desk_id;
-                            else if (orderDesk[i] == null && Desk_id == null)
-                                orderDesk[i] = orderDesk[i - 1];
-
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                        }
-                    });
+                    say *= Double.parseDouble(String.valueOf(orderprice));
+                    orderprice = say.toString();
 
                     if (orderDesk[i] != null) {
+                        sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                String Desk_id = (String) parent.getItemAtPosition(position);
+                                // Notify the selected item text
+                                if (Desk_id != null)
+                                    orderDesk[i] = Desk_id;
+                                else if (orderDesk[i] == null && Desk_id == null)
+                                    orderDesk[i] = orderDesk[i - 1];
+
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+                            }
+                        });
+
+                        if (orderDesk[i] != null) {
+                            gecici = orderDesk[i];
+                        } else
+                            orderDesk[i] = gecici;
+
+
                         gecici = orderDesk[i];
-                    } else
-                        orderDesk[i] = gecici;
+                        //Toast.makeText(MainActivity.this," "+gecici,Toast.LENGTH_LONG).show();
+                        AddData(gecici, ordername, Quantity1);
+
+                        intent.putExtra(DeskPos, orderDesk);
+                        i++;
+                    }
 
 
-                    gecici = orderDesk[i];
-                    //Toast.makeText(MainActivity.this," "+gecici,Toast.LENGTH_LONG).show();
-                    AddData(gecici, ordername, Quantity1);
-
-                    intent.putExtra(DeskPos, orderDesk);
-                    i++;
+                    intent.putExtra(Order_Name, ordername);
+                    intent.putExtra(Order_PRICE, orderprice);
+                    intent.putExtra(Quantity, Quantity1);
                 }
 
 
-                intent.putExtra(Order_Name, ordername);
-                intent.putExtra(Order_PRICE, orderprice);
-                intent.putExtra(Quantity, Quantity1);
-
-
-                // AddData(DeskPos,ordername,Quantity1);
 
             }
         });
@@ -175,7 +179,35 @@ public class MainActivity extends AppCompatActivity  {
         delBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dataHelper.delData(DeskPos);
+                if(orderDesk[i]!=null || count==0){
+                    sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            String Desk_id=(String)parent.getItemAtPosition(position);
+                            // Notify the selected item text
+                            if(Desk_id!=null)
+                                orderDesk[i]=Desk_id;
+                            else if(orderDesk[i]==null&&Desk_id==null)
+                                orderDesk[i]=orderDesk[i-1];
+
+                        }
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
+                    });
+
+                    if(orderDesk[i]!=null){
+                        gecici=orderDesk[i];
+                    }else
+                        orderDesk[i]=gecici;
+
+
+                    gecici=orderDesk[i];
+                    //Toast.makeText(MainActivity.this,"Geldi ",Toast.LENGTH_LONG).show();
+                    //dataHelper.deleteData(gecici);
+                    delData(gecici);
+                    i++;
+                }
             }
         });
 

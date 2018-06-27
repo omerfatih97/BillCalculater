@@ -22,14 +22,25 @@
     <ListView
         android:id="@+id/listView_lv"
         android:layout_width="match_parent"
-        android:layout_height="310dp"
-        android:layout_weight="2"></ListView>
+        android:layout_height="256dp"
+        android:layout_weight="2">
+
+    </ListView>
+
+    <EditText
+        android:id="@+id/editTextDelID"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_weight="3"
+        android:ems="10"
+        android:hint="Enter Id from List"
+        android:inputType="number" />
 
     <TextView
         android:id="@+id/textViewShowPrice"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:layout_weight="3"
+        android:layout_height="84dp"
+        android:layout_weight="4"
         android:text="Price:"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="40sp"
@@ -38,10 +49,17 @@
     <TextView
         android:id="@+id/textViewPrice"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_weight="4"
+        android:layout_height="76dp"
+        android:layout_weight="5"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp"
         android:textStyle="bold|italic" />
+
+    <Button
+        android:id="@+id/orderDeleteBut"
+        android:layout_width="match_parent"
+        android:layout_height="71dp"
+        android:layout_weight="5"
+        android:text="Delete From List" />
 
 </LinearLayout>
