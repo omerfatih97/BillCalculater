@@ -40,21 +40,24 @@ public class MainActivity extends AppCompatActivity  {
 
         final Intent intent = new Intent(MainActivity.this, OrderActivity.class);
 
-        // final DataHelper dataHelper = new DataHelper(this);
+        //Inserting Desks to Database
         dataHelper.insertDesk("Desk 1");
         dataHelper.insertDesk("Desk 2");
         dataHelper.insertDesk("Desk 3");
 
+        //Inserting foods to Database
         dataHelper.insertMenu("Fish", String.valueOf(5));
         dataHelper.insertMenu("Hamburger", String.valueOf(4));
         dataHelper.insertMenu("Pizza", String.valueOf(3.5));
         dataHelper.insertMenu("Doner", String.valueOf(3));
         dataHelper.insertMenu("Toast", String.valueOf(2));
 
+        //Getting Food List from Database
         ArrayList<String> listMenu = dataHelper.getAllMenu();
         final Spinner spMenu = (Spinner)findViewById(R.id.spinnerMenu);
         ArrayAdapter<String> adapterMenu=new ArrayAdapter<String>(this,R.layout.spinner_layout,R.id.Mtxt,listMenu);
 
+        //Getting Desk Numbers List from Database
         ArrayList<String>listDesk = dataHelper.getAllDesk();
         final Spinner sp = (Spinner)findViewById(R.id.spinnerDesk);
         ArrayAdapter<String>adapter=new ArrayAdapter<String>(this,R.layout.spinner_layout,R.id.Dtxt,listDesk);
@@ -65,26 +68,25 @@ public class MainActivity extends AppCompatActivity  {
         //Find Price for Main Screen
         final TextView Screenprice=(TextView) findViewById(R.id.textViewPrice);
 
+        //Catching Food which is selected on spinner
         spMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItemText = (String) parent.getItemAtPosition(position);
-
                 // Notify the selected item text
                 String FPrice1=dataHelper.findPrice(selectedItemText);
 
                 Screenprice.setText(FPrice1.toString());
 
                 intent.putExtra(MenuPos,selectedItemText);
-
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
 
+        //Catching selected Desk Number on Spinner
         sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -98,6 +100,7 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
+        //Ordered Data Add Button to Database
         Button addBtn=(Button)findViewById(R.id.buttonAdd);
         addBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -118,27 +121,13 @@ public class MainActivity extends AppCompatActivity  {
                     final String ordername=order.getText().toString();
                     String orderprice1=price.getText().toString();
 
-                    String orderprice=dataHelper.findPrice(orderprice1);
+                    String orderprice=dataHelper.findPrice(orderprice1);            //Finding selected food price
 
                     say*=Double.parseDouble(String.valueOf(orderprice));
                     orderprice=say.toString();
 
-
-                    sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            String Desk_id = (String) parent.getItemAtPosition(position);
-                            // Notify the selected item text
-                            orderDesk[1]=Desk_id;
-                            intent.putExtra(DeskPos,orderDesk[1]);
-                        }
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                        }
-                    });
-                    //Toast.makeText(MainActivity.this,"Geldi ",Toast.LENGTH_LONG).show();
                     String desk=intent.getStringExtra(MainActivity.DeskPos);
-                    AddData(desk,ordername,Quantity1);
+                    AddData(desk,ordername,Quantity1);                              //Adding order to Database
 
 
                     intent.putExtra(Order_Name,ordername);
@@ -149,24 +138,13 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
+        //Delete Button
         Button delBtn=(Button)findViewById(R.id.buttonDel);
         delBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        String Desk_id = (String) parent.getItemAtPosition(position);
-                        // Notify the selected item text
-                        orderDesk[2] =Desk_id;
-                        intent.putExtra(DeskPos,orderDesk[2]);
-                    }
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                    }
-                });
                 String desk=intent.getStringExtra(MainActivity.DeskPos);
-                delData(desk);
+                delData(desk);                                                      //Deleting Selected Desk's All Orders
             }
         });
 
@@ -175,18 +153,6 @@ public class MainActivity extends AppCompatActivity  {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        String Desk_id = (String) parent.getItemAtPosition(position);
-                        // Notify the selected item text
-                        intent.putExtra(DeskPos,Desk_id);
-                    }
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                    }
-                });
-
                 startActivity(intent);
 
             }

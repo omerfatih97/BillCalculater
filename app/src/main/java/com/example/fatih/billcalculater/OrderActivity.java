@@ -1,6 +1,5 @@
 package com.example.fatih.billcalculater;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,13 +14,10 @@ import java.util.List;
 
 import android.widget.Toast;
 
-
-
 public class OrderActivity extends AppCompatActivity {
 
     DataHelper dataHelper = new DataHelper(this);
     List<String> list = new ArrayList<>();
-
     ListView lv;
 
     @Override
@@ -32,36 +28,34 @@ public class OrderActivity extends AppCompatActivity {
 
         String desk=intent.getStringExtra(MainActivity.DeskPos);
 
+        //Writing Selected Desk Tittle
         TextView orderList=(TextView)findViewById(R.id.Order_List);
         orderList.setText(""+desk+" Order List");
 
-        Toast.makeText(OrderActivity.this," "+desk,Toast.LENGTH_LONG).show();
-        Double Price=dataHelper.findDeskTotal(desk);
+        Double Price=dataHelper.findDeskTotal(desk);        //Finding total bill of Desk
 
-        Button delBut=(Button)findViewById(R.id.orderDeleteBut);
-        final ArrayList<String>arrayList1=new ArrayList<String>();
-
+        //Listing All Orders of Selected Desk
         lv=(ListView)findViewById(R.id.listView_lv);
-
-
-        final ArrayList<String> listOrder= dataHelper.getAllOrder(desk);
-        final ArrayAdapter<String>adapter1=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,listOrder);
+        final ArrayList<String> listOrder= dataHelper.getAllOrder(desk);        //Getting Orders From Database
+        final ArrayAdapter<String>adapter1=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,listOrder);    //Putting Orders to List
         lv.setAdapter(adapter1);
         adapter1.notifyDataSetChanged();
 
+        //Setting Delete button for delete the specific Order From List
+        Button delBut=(Button)findViewById(R.id.orderDeleteBut);
         delBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final EditText idtext= (EditText)findViewById(R.id.editTextDelID);
-
                 String id= idtext.getText().toString();
 
+                //Checking if the id column filled
                 if(id.trim().isEmpty()){
-                    idtext.setError("Id coloumn should be filled. It can't be empty!!");
+                    idtext.setError("Id column should be filled. It can't be empty!!");
                 }
                 else
                 {
-                    int res=delData(id);
+                    int res=delData(id);    //Deleting Specific Order from Orderlist in Database
                     if (res==1)
                         Toast.makeText(OrderActivity.this,"Succesfully Deleted",Toast.LENGTH_LONG).show();
                     else
@@ -72,12 +66,14 @@ public class OrderActivity extends AppCompatActivity {
         });
 
         TextView price= (TextView) findViewById(R.id.textViewPrice);
-        price.setText(Price+" €");
+        price.setText(Price+" €");      //Showing Total Price of Desk
 
 
     }
 
+    //Delete function and refresh the page view
     public int delData(String id){
+
         Intent intent = getIntent();
         String desk=intent.getStringExtra(MainActivity.DeskPos);
         int res =dataHelper.deleteOrder(id);

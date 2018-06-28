@@ -18,6 +18,7 @@ public class DataHelper extends SQLiteOpenHelper {
 
     public static final int Database_Version =1;
 
+    //Creating Database Tables
     public static final String Create_Menu ="CREATE TABLE IF NOT EXISTS "+Table_Menu+"(id INTEGER PRIMARY KEY AUTOINCREMENT,food_name STRING NOT NULL UNIQUE,price DOUBLE NOT NULL )";
     public static final String Create_Desk ="CREATE TABLE IF NOT EXISTS "+ Table_Desk +"(id INTEGER PRIMARY KEY AUTOINCREMENT, desk_no STRING NOT NULL UNIQUE )";
     public static final String Create_Order ="CREATE TABLE IF NOT EXISTS "+ Table_Order +"(id INTEGER PRIMARY KEY AUTOINCREMENT, desk_id STRING NOT NULL, food_id STRING NOT NULL,total DOUBLE NOT NULL)";
@@ -39,22 +40,25 @@ public class DataHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //db.execSQL(Delete_Order);
-        //db.execSQL(Delete_Desk);
-        db.execSQL(Create_Order);
+        db.execSQL(Delete_Order);
+        db.execSQL(Delete_Desk);
+        db.execSQL(Delete_Order);
         // Create tables again
         onCreate(db);
     }
 
+    //Deleting All Desk orders from database which sent from Main Activity
     public Integer deleteData(String id){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(Table_Order,"desk_id=?",new String[]{id});
     }
+    //Finding Selected food from list Which sent from Order Activity , then Deleting from Database table
     public Integer deleteOrder(String id){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(Table_Order,"id=?",new String[]{id});
     }
 
+    //Adding Desk Numbers to Database which is sent from Main Activity
     public void insertDesk(String desk_no){
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
@@ -73,6 +77,7 @@ public class DataHelper extends SQLiteOpenHelper {
         }
     }
 
+    //Adding Food Names to Database which is sent from Main Activity
     public void insertMenu(String food_name,String price){
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
@@ -92,7 +97,7 @@ public class DataHelper extends SQLiteOpenHelper {
         }
     }
 
-
+    //Adding Order to Database which is sent from Main Activity
     public boolean AddData(String Masa,String Yemek,String Quantity){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues contentValues=new ContentValues();
@@ -117,6 +122,7 @@ public class DataHelper extends SQLiteOpenHelper {
         }
     }
 
+    //Taking All Desk numbers from database table to list view
     public ArrayList<String> getAllDesk(){
         ArrayList<String> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -141,6 +147,7 @@ public class DataHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    //Taking All Food names from database table to list view
     public ArrayList<String>getAllMenu(){
         ArrayList<String> listmenu = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -166,6 +173,7 @@ public class DataHelper extends SQLiteOpenHelper {
         return listmenu;
     }
 
+    //Taking All Orders from database table to list view
     public ArrayList<String>getAllOrder(String Desk){
         ArrayList<String> listorder = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -192,6 +200,7 @@ public class DataHelper extends SQLiteOpenHelper {
         return listorder;
     }
 
+    //Finding Price of selected food
     public String findPrice(String food){
         SQLiteDatabase db = this.getReadableDatabase();
         db.beginTransaction();
@@ -206,7 +215,7 @@ public class DataHelper extends SQLiteOpenHelper {
     }
 
 
-
+    //Finding Total Price Of Desk
     public double findDeskTotal(String desk){
         double total=0,variable=0;
         SQLiteDatabase db = this.getReadableDatabase();
