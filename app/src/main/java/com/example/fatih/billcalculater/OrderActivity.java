@@ -1,24 +1,17 @@
 package com.example.fatih.billcalculater;
 
-import android.app.ListActivity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
 
@@ -38,7 +31,7 @@ public class OrderActivity extends AppCompatActivity {
         TextView orderList=(TextView)findViewById(R.id.Order_List);
         orderList.setText(""+Desk+" Order List");
         Toast.makeText(OrderActivity.this," "+Desk,Toast.LENGTH_LONG).show();
-        Double Price=dataHelper.findDesk(Desk);
+        Double Price=dataHelper.findDeskTotal(Desk);
 
         final ArrayList<String>arrayList1=new ArrayList<String>();
 

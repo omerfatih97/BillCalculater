@@ -197,7 +197,7 @@ public class DataHelper extends SQLiteOpenHelper {
         return price;
     }
 
-    public double findDesk(String desk){
+    public double findDeskTotal(String desk){
         double total=0,variable=0;
         SQLiteDatabase db = this.getReadableDatabase();
         db.beginTransaction();
