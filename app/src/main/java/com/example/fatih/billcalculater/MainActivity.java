@@ -1,6 +1,5 @@
 package com.example.fatih.billcalculater;
 
-
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -28,14 +27,11 @@ public class MainActivity extends AppCompatActivity  {
     public static final String DeskPos = "com.example.fatih.proje.deskpos";
 
 
-
     DataHelper dataHelper = new DataHelper(this);
     SQLiteDatabase db;
 
-    String[] orderDesk =new String[100];
-    String gecici=new String();
+    String[] orderDesk =new String[10];
 
-    int i=0,count=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +74,7 @@ public class MainActivity extends AppCompatActivity  {
                 String FPrice1=dataHelper.findPrice(selectedItemText);
 
                 Screenprice.setText(FPrice1.toString());
+
                 intent.putExtra(MenuPos,selectedItemText);
 
             }
@@ -115,8 +112,6 @@ public class MainActivity extends AppCompatActivity  {
                     intent.putExtra(Quantity,Quantity1);
                     Double say=Double.parseDouble(intent.getStringExtra(MainActivity.Quantity));
 
-
-
                     final TextView order=(TextView) findViewById(R.id.Mtxt);
                     TextView price=(TextView) findViewById(R.id.Mtxt);
 
@@ -128,38 +123,27 @@ public class MainActivity extends AppCompatActivity  {
                     say*=Double.parseDouble(String.valueOf(orderprice));
                     orderprice=say.toString();
 
-                    if(orderDesk[i]!=null || count==0){
-                        sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                String Desk_id=(String)parent.getItemAtPosition(position);
-                                // Notify the selected item text
-                                if(Desk_id!=null)
-                                    orderDesk[i]=Desk_id;
-                                else if(orderDesk[i]==null&&Desk_id==null)
-                                    orderDesk[i]=orderDesk[i-1];
 
-                            }
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-                            }
-                        });
+                    sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            String Desk_id = (String) parent.getItemAtPosition(position);
+                            // Notify the selected item text
+                            orderDesk[1]=Desk_id;
+                            intent.putExtra(DeskPos,orderDesk[1]);
+                        }
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
+                    });
+                    //Toast.makeText(MainActivity.this,"Geldi ",Toast.LENGTH_LONG).show();
+                    String desk=intent.getStringExtra(MainActivity.DeskPos);
+                    AddData(desk,ordername,Quantity1);
 
-                        if(orderDesk[i]!=null){
-                            gecici=orderDesk[i];
-                        }else
-                            orderDesk[i]=gecici;
-
-                        gecici=orderDesk[i];
-                        AddData(gecici,ordername,Quantity1);
-                        intent.putExtra(DeskPos,gecici);
-                        i++;
-                    }
 
                     intent.putExtra(Order_Name,ordername);
                     intent.putExtra(Order_PRICE,orderprice);
                     intent.putExtra(Quantity,Quantity1);
-
                 }
 
             }
@@ -169,38 +153,20 @@ public class MainActivity extends AppCompatActivity  {
         delBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //dataHelper.onUpgrade(db,1,2);
-                if(orderDesk[i]!=null || count==0){
-                    sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            String Desk_id=(String)parent.getItemAtPosition(position);
-                            // Notify the selected item text
-                            if(Desk_id!=null)
-                                orderDesk[i]=Desk_id;
-                            else if(orderDesk[i]==null&&Desk_id==null)
-                                orderDesk[i]=orderDesk[i-1];
-
-                        }
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                        }
-                    });
-
-                    if(orderDesk[i]!=null){
-                        gecici=orderDesk[i];
-                    }else
-                        orderDesk[i]=gecici;
-
-
-                    gecici=orderDesk[i];
-
-                    delData(gecici);
-                    i++;
-                }
-
-
-
+                sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        String Desk_id = (String) parent.getItemAtPosition(position);
+                        // Notify the selected item text
+                        orderDesk[2] =Desk_id;
+                        intent.putExtra(DeskPos,orderDesk[2]);
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
+                String desk=intent.getStringExtra(MainActivity.DeskPos);
+                delData(desk);
             }
         });
 
@@ -215,13 +181,11 @@ public class MainActivity extends AppCompatActivity  {
                         String Desk_id = (String) parent.getItemAtPosition(position);
                         // Notify the selected item text
                         intent.putExtra(DeskPos,Desk_id);
-
                     }
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
                     }
                 });
-
 
                 startActivity(intent);
 
@@ -264,7 +228,7 @@ public class MainActivity extends AppCompatActivity  {
     }
     public void delData(String newDesk){
         int insert= dataHelper.deleteData(newDesk);
-        if (insert!=0){
+        if (insert==1){
             Toast.makeText(MainActivity.this,"("+newDesk+") Data's Successfully deleted!!!",Toast.LENGTH_LONG).show();
         }else {
             Toast.makeText(MainActivity.this,"Wrong",Toast.LENGTH_LONG).show();
