@@ -1,5 +1,6 @@
 package com.example.fatih.billcalculater;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,16 +10,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
+import java.util.List;
 
 import android.widget.Toast;
+
 
 
 public class OrderActivity extends AppCompatActivity {
 
     DataHelper dataHelper = new DataHelper(this);
-
+    List<String> list = new ArrayList<>();
 
     ListView lv;
 
@@ -27,22 +29,25 @@ public class OrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         Intent intent = getIntent();
-        String Desk=intent.getStringExtra(MainActivity.DeskPos);
-        TextView orderList=(TextView)findViewById(R.id.Order_List);
-        orderList.setText(""+Desk+" Order List");
-        Toast.makeText(OrderActivity.this," "+Desk,Toast.LENGTH_LONG).show();
-        Double Price=dataHelper.findDeskTotal(Desk);
 
+        String desk=intent.getStringExtra(MainActivity.DeskPos);
+
+        TextView orderList=(TextView)findViewById(R.id.Order_List);
+        orderList.setText(""+desk+" Order List");
+
+        Toast.makeText(OrderActivity.this," "+desk,Toast.LENGTH_LONG).show();
+        Double Price=dataHelper.findDeskTotal(desk);
+
+        Button delBut=(Button)findViewById(R.id.orderDeleteBut);
         final ArrayList<String>arrayList1=new ArrayList<String>();
 
         lv=(ListView)findViewById(R.id.listView_lv);
-        Button delBut=(Button)findViewById(R.id.orderDeleteBut);
 
 
-                    ArrayList<String> listOrder= dataHelper.getAllOrder(Desk);
-                    ArrayAdapter<String>adapter1=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,listOrder);
-                    lv.setAdapter(adapter1);
-                    adapter1.notifyDataSetChanged();
+        final ArrayList<String> listOrder= dataHelper.getAllOrder(desk);
+        final ArrayAdapter<String>adapter1=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,listOrder);
+        lv.setAdapter(adapter1);
+        adapter1.notifyDataSetChanged();
 
         delBut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +65,7 @@ public class OrderActivity extends AppCompatActivity {
                     if (res==1)
                         Toast.makeText(OrderActivity.this,"Succesfully Deleted",Toast.LENGTH_LONG).show();
                     else
-                        Toast.makeText(OrderActivity.this,"Wrong!!!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(OrderActivity.this,"Wrong",Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -68,6 +73,7 @@ public class OrderActivity extends AppCompatActivity {
 
         TextView price= (TextView) findViewById(R.id.textViewPrice);
         price.setText(Price+" €");
+
 
     }
 
@@ -79,6 +85,11 @@ public class OrderActivity extends AppCompatActivity {
         final ArrayAdapter<String>adapter1=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,listOrder);
         lv.setAdapter(adapter1);
         adapter1.notifyDataSetChanged();
+
+        Double Price=dataHelper.findDeskTotal(desk);
+        TextView price= (TextView) findViewById(R.id.textViewPrice);
+        price.setText(Price+" €");
+
         return res;
     }
 

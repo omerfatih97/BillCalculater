@@ -39,11 +39,20 @@ public class DataHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(Delete_Order);
-        db.execSQL(Delete_Desk);
-        db.execSQL(Delete_Desk);
+        //db.execSQL(Delete_Order);
+        //db.execSQL(Delete_Desk);
+        db.execSQL(Create_Order);
         // Create tables again
         onCreate(db);
+    }
+
+    public Integer deleteData(String id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(Table_Order,"desk_id=?",new String[]{id});
+    }
+    public Integer deleteOrder(String id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(Table_Order,"id=?",new String[]{id});
     }
 
     public void insertDesk(String desk_no){
@@ -97,6 +106,7 @@ public class DataHelper extends SQLiteOpenHelper {
         price*=quan;
         String price1=String.valueOf(price);
         contentValues.put("total",price1);
+
         contentValues.put("food_id",Quantity+" X "+Yemek+" (Price: "+price+"€)");
 
         long result=db.insert(Table_Order,null,contentValues);
@@ -168,7 +178,7 @@ public class DataHelper extends SQLiteOpenHelper {
                     String food_name = c.getString(c.getColumnIndex("food_id"));
                     String id = c.getString(c.getColumnIndex("id"));
 
-                    listorder.add("Order_ID: "+id+""+food_name);
+                    listorder.add(id+" - "+food_name);
                 }
             }
             db.setTransactionSuccessful();
@@ -190,12 +200,12 @@ public class DataHelper extends SQLiteOpenHelper {
         String price = cursor.getString(cursor.getColumnIndex("price"));
         cursor.close();
 
-            db.endTransaction();
-            db.close();
-
-
+        db.endTransaction();
+        db.close();
         return price;
     }
+
+
 
     public double findDeskTotal(String desk){
         double total=0,variable=0;
@@ -220,14 +230,4 @@ public class DataHelper extends SQLiteOpenHelper {
         }
         return total;
     }
-
-    public Integer deleteData(String id){
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(Table_Order,"desk_id=?",new String[]{id});
-    }
-    public Integer deleteOrder(String id){
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(Table_Order,"id=?",new String[]{id});
-    }
-
 }
