@@ -239,4 +239,10 @@ public class DataHelper extends SQLiteOpenHelper {
         }
         return total;
     }
+    public Cursor query(String desk_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        Cursor c = db.query("ord",null,"desk_id=?",new String[]{desk_id},null,null,null);
+        return c;
+    }
 }
